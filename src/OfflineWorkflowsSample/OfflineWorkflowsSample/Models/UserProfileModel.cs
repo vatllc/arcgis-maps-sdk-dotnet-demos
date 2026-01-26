@@ -1,7 +1,8 @@
 ﻿using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Esri.ArcGISRuntime.Portal;
 using Prism.Mvvm;
+using Esri.ArcGISRuntime.UI;
+using System.Threading.Tasks;
 
 namespace OfflineWorkflowsSample.Models
 {
@@ -13,11 +14,11 @@ namespace OfflineWorkflowsSample.Models
         {
             Portal = user.Portal;
 
-            ProfilePicture = user.ThumbnailUri != null ? new BitmapImage(user.ThumbnailUri) : null;
-
             FullName = user.FullName;
 
             User = user;
+
+            _ = LoadProfilePictureAsync(user);
         }
 
         public ImageSource ProfilePicture
@@ -31,5 +32,10 @@ namespace OfflineWorkflowsSample.Models
         public string FullName { get; }
 
         public PortalUser User { get; }
+
+        private async Task LoadProfilePictureAsync(PortalUser user)
+        {
+            ProfilePicture = await user.Thumbnail.ToImageSourceAsync();
+        }
     }
 }
