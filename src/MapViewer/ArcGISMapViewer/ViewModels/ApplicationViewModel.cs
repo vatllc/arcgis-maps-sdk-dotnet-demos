@@ -121,7 +121,7 @@ public partial class ApplicationViewModel : ObservableObject
             {
                 System.Diagnostics.Debug.WriteLine($"{newValue.Type} not implemented");
             }
-            if (value.Extent != null && value.Type != PortalItemType.WebScene && value.Type != PortalItemType.WebMap) // WebMap and WebScenes already have initial viewpoints
+            if (newValue.Extent != null && newValue.Type != PortalItemType.WebScene && newValue.Type != PortalItemType.WebMap) // WebMap and WebScenes already have initial viewpoints
             {
                 if(scene != null)
                     scene.InitialViewpoint = new Viewpoint(newValue.Extent);
