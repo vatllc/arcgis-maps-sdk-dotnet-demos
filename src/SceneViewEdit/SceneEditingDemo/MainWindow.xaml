@@ -28,11 +28,6 @@
             <esriSymbology:SimpleRenderer x:Key="PolygonRenderer" Symbol="{StaticResource SFS}" />
         </Grid.Resources>
         <esri:SceneView x:Name="MySceneView" GeoViewTapped="MySceneView_SceneViewTapped">
-            <esriMapping:Scene>
-                <esriMapping:Scene.OperationalLayers>
-                    <esriMapping:ArcGISTiledLayer Id="StreetMapLayer" Source="https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer" />
-                </esriMapping:Scene.OperationalLayers>
-            </esriMapping:Scene>
             <esri:SceneView.GraphicsOverlays>
                 <esriUI:GraphicsOverlay Id="PointGraphicsOverlay" Renderer="{StaticResource MarkerRenderer}" />
                 <esriUI:GraphicsOverlay Id="PolylineGraphicsOverlay" Renderer="{StaticResource PolylineRenderer}" />
