@@ -40,15 +40,6 @@
             <local:RestoreAutoPanMode.RestoreAutoPanSettings>
                 <local:RestoreAutoPanMode DelayInSeconds="5" PanMode="Navigation" IsEnabled="True" RestoreScale="5000" x:Name="restoreAutoModeBehavior" />
             </local:RestoreAutoPanMode.RestoreAutoPanSettings>
-            <esrimapping:Map>
-                <esrimapping:Map.Basemap>
-                    <esrimapping:Basemap>
-                        <esrimapping:Basemap.BaseLayers>
-                            <esrimapping:ArcGISTiledLayer Source="http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer" />
-                        </esrimapping:Basemap.BaseLayers>
-                    </esrimapping:Basemap>
-                </esrimapping:Map.Basemap>
-            </esrimapping:Map>
             <esri:MapView.GraphicsOverlays>
                 <esriui:GraphicsOverlay />
             </esri:MapView.GraphicsOverlays>

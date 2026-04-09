@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Location;
+using Esri.ArcGISRuntime.Mapping;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
@@ -26,6 +27,7 @@ namespace ExternalNmeaGPS
 		public MainWindow()
 		{
 			InitializeComponent();
+			mapView.Map = new Map(new Basemap(new ArcGISTiledLayer(new Uri("https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"))));
 			mapView.LocationDisplay.AutoPanMode = Esri.ArcGISRuntime.UI.LocationDisplayAutoPanMode.Navigation;
 			mapView.LocationDisplay.InitialZoomScale = 5000;
 			this.Closing += (s, e) => { mapView.LocationDisplay.IsEnabled = false; }; // Ensure datasource gets stopped on shutdown
@@ -97,7 +99,7 @@ namespace ExternalNmeaGPS
 			currentNmeaDevice = device;
 			mapView.LocationDisplay.DataSource = currentNmeaDevice;
 			mapView.LocationDisplay.IsEnabled = true;
-            device.SatellitesChanged += Device_SatellitesChanged;
+			device.SatellitesChanged += Device_SatellitesChanged;
 		}
 
 		private void Device_SatellitesChanged(object? sender, IReadOnlyList<NmeaSatelliteInfo> satellites)
@@ -129,7 +131,7 @@ namespace ExternalNmeaGPS
 			var result = dialog.ShowDialog();
 			if(result.HasValue && result.Value)
 			{
-                mapView.GraphicsOverlays!.First().Graphics.Clear();
+				mapView.GraphicsOverlays!.First().Graphics.Clear();
 				var device = NmeaLocationDataSource.FromStreamCreator(
 					(s) => Task.FromResult<Stream>(new BufferedFileStream(new System.IO.StreamReader(dialog.FileName), new BurstEmulationSettings())));
 				LoadDevice(device);

@@ -44,13 +44,13 @@ internal class AppSettings : ModelBase
         PortalUser = value;
         if (value != null)
         {
-            if (value.ThumbnailUri == null)
+            if (value.Thumbnail == null)
             {
                 PortalUserThumbnail = null;
             }
             else
             {
-                PortalUserThumbnail = ImageSource.FromStream((c) => value.GetThumbnailDataAsync(c));
+                PortalUserThumbnail = value.Thumbnail.ToImageSource();
             }
             _ = RefreshMaps(value.Portal);
         }
