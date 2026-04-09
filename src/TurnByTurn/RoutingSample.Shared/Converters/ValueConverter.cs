@@ -1,8 +1,8 @@
 ﻿using System;
 #if MAUI
 using System.Globalization;
-#elif NETFX_CORE
-using Windows.UI.Xaml.Data;
+#elif WINUI
+using Microsoft.UI.Xaml.Data;
 #else
 using System.Globalization;
 using System.Windows.Data;
@@ -15,13 +15,13 @@ namespace RoutingSample.Converters
 	/// </summary>
     public abstract class ValueConverter : IValueConverter
     {
-#if NETFX_CORE
+#if WINUI
 		object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
 #else
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 #endif
 		{
-#if !NETFX_CORE
+#if !WINUI
 			string language = culture.TwoLetterISOLanguageName;
 #endif
 			return Convert(value, targetType, parameter, language);
@@ -29,13 +29,13 @@ namespace RoutingSample.Converters
 
 		protected abstract object Convert(object value, Type targetType, object parameter, string language);
 
-#if NETFX_CORE
+#if WINUI
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
 #else
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 #endif
 		{
-#if !NETFX_CORE
+#if !WINUI
 			string language = culture.TwoLetterISOLanguageName;
 #endif
 			return ConvertBack(value, targetType, parameter, language);
@@ -48,21 +48,21 @@ namespace RoutingSample.Converters
 	{
 		protected abstract string Format(object value, object parameter, string language);
 
-#if NETFX_CORE
+#if WINUI
 		object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
 #else
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 #endif
 		{
-#if !NETFX_CORE
+#if !WINUI
 			string language = culture.TwoLetterISOLanguageName;
 #endif
 
-			return Format(value, parameter, language);
+            return Format(value, parameter, language);
 		}
 
-#if NETFX_CORE
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+#if WINUI
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
 #else
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 #endif

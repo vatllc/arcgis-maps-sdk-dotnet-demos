@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 
 #if MAUI
-#elif NETFX_CORE
+#elif WINUI
 using System.Linq;
 using Windows.Media.Core;
 using Windows.Media.Playback;
@@ -31,7 +31,7 @@ namespace RoutingSample
                 Volume = 0.95f,
                 Pitch = 1.0f,
             };
-#elif NETFX_CORE
+#elif WINUI
             _speechSynthesizer = new SpeechSynthesizer();
             _speechSynthesizer.Voice = SpeechSynthesizer.AllVoices.Where(voice => voice.Gender == VoiceGender.Female)
                 .FirstOrDefault() ?? SpeechSynthesizer.DefaultVoice;
@@ -53,7 +53,7 @@ namespace RoutingSample
 
 #if MAUI
             await TextToSpeech.SpeakAsync(text, _speechOptions);
-#elif NETFX_CORE
+#elif WINUI
             // Doesn't seem to work all the time.
             using (var stream = await _speechSynthesizer.SynthesizeTextToStreamAsync(text))
             using (var source = MediaSource.CreateFromStream(stream, stream.ContentType))

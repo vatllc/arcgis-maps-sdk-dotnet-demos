@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 #if MAUI
 using Esri.ArcGISRuntime.Maui;
-#elif NETFX_CORE
+#elif WINUI
 using Esri.ArcGISRuntime.UI.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 #else
 using Esri.ArcGISRuntime.UI.Controls;
 using System.Windows;

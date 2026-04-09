@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-#if NETFX_CORE
+#if WINUI
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 #endif
@@ -17,11 +17,11 @@ namespace RoutingSample
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-#if NETFX_CORE
+#if WINUI
         // We need to use the dispatcher on UWP to update the main view
         protected async void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            _ = App.MainWindow?.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             });

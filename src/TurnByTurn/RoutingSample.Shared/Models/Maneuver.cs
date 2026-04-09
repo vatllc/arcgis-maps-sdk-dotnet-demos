@@ -43,7 +43,7 @@ namespace RoutingSample.Models
 
 #if MAUI
                     ImageSource = $"{_type.ToString().ToLowerInvariant()}.png";
-#elif NETFX_CORE
+#elif WINUI
                     ImageUri = new Uri($"ms-appx:///Assets/Maneuvers/{_type.ToString().ToLowerInvariant()}.png");
 #else
                     ImageUri = new Uri($"pack://application:,,,/Assets/Maneuvers/{_type.ToString().ToLowerInvariant()}.png");

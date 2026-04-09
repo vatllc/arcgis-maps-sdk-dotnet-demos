@@ -6,13 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -37,9 +37,9 @@ namespace RoutingSample
             var password = Password.Password.Trim();
             try
             {
-                var credential = await AuthenticationManager.Current.GenerateCredentialAsync(new Uri("https://www.arcgis.com/sharing/rest"), username, password);
+                var credential = await AccessTokenCredential.CreateAsync(new Uri("https://www.arcgis.com/sharing/rest"), username, password);
                 AuthenticationManager.Current.AddCredential(credential);
-                LoginStatus.Text = "Success! Signed in as: " + credential.UserName;
+                LoginStatus.Text = "Success! Signed in as: " + credential.Username;
                 Frame.Navigate(typeof(MainPage));
             }
             catch (Exception ex)

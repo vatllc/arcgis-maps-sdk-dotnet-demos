@@ -1,7 +1,7 @@
 ﻿using System;
 
-#if NETFX_CORE
-using Windows.UI.Xaml;
+#if WINUI
+using Microsoft.UI.Xaml;
 #else
 using System.Windows;
 #endif
