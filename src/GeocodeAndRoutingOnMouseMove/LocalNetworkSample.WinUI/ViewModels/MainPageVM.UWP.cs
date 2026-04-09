@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Devices.Enumeration;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace LocalNetworkSample
 {

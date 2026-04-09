@@ -37,36 +37,36 @@ namespace LocalNetworkSample
 		{
 			get
 			{
-#if NETFX_CORE
+#if WINUI
 				return Windows.ApplicationModel.DesignMode.DesignModeEnabled;
 #else
-				return DesignerProperties.GetIsInDesignMode(System.Windows.Application.Current.MainWindow);
+                return DesignerProperties.GetIsInDesignMode(System.Windows.Application.Current.MainWindow);
 #endif
 			}
 		}
 
 		protected
-#if NETFX_CORE
- Windows.UI.Core.CoreDispatcher
+#if WINUI
+ Microsoft.UI.Dispatching.DispatcherQueue
 #else
-		System.Windows.Threading.Dispatcher
+        System.Windows.Threading.Dispatcher
 #endif
  Dispatcher
 		{
 			get
 			{
-#if NETFX_CORE
-				return Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
-#else	
-				return System.Windows.Application.Current.MainWindow.Dispatcher;
+#if WINUI
+				return App.MainWindow.DispatcherQueue;
+#else
+                return System.Windows.Application.Current.MainWindow.Dispatcher;
 #endif
 			}
 		}
 
 		protected void Dispatch(Action action)
 		{
-#if NETFX_CORE
-			var _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+#if WINUI
+			var _ = Dispatcher.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () => action());
 #else
 			Dispatcher.BeginInvoke(action);
 #endif

@@ -32,7 +32,7 @@
 
         <esri:MapView x:Name="mapview" Grid.ColumnSpan="2"
 					  PointerMoved="mapview_PointerMoved"
-					  Map="{Binding Map}" />
+					  Map="{Binding Map}" GeometryEditor="{Binding GeometryEditor}" />
 
         <localCtrls:CollapsibleTab IsOpen="{Binding IsSidePanelOpen, Mode=TwoWay}"
 								   CurrentIndex="{Binding CurrentTabItem, Mode=TwoWay}">
@@ -80,6 +80,7 @@
                         <Button Content="Add Point Barrier" Command="{Binding AddPointBarrierCommand}" HorizontalAlignment="Stretch" />
                         <Button Content="Add Polyline Barrier" Command="{Binding AddPolylineBarrierCommand}" HorizontalAlignment="Stretch" />
                         <Button Content="Add Polygon Barrier" Command="{Binding AddPolygonBarrierCommand}" HorizontalAlignment="Stretch" />
+                        <Button Content="Accept Barrier" Command="{Binding CompleteBarrierCommand}" HorizontalAlignment="Stretch" />
                         <Button Content="Clear Barriers" Command="{Binding ClearBarriersCommand}" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </localCtrls:TabItem>

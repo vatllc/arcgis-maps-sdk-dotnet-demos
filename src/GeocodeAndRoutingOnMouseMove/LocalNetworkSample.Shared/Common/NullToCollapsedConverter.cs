@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-#if NETFX_CORE
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+#if WINUI
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 #else
 using System.Windows.Data;
 using System.Windows;
@@ -16,8 +16,8 @@ namespace LocalNetworkSample.Common
 {
 	public sealed class NullToCollapsedConverter : IValueConverter
     {
-#if NETFX_CORE
-		public object Convert(object value, Type targetType, object parameter, string language)
+#if WINUI
+        public object Convert(object value, Type targetType, object parameter, string language)
 #else
        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 #endif
@@ -26,7 +26,7 @@ namespace LocalNetworkSample.Common
 				return Visibility.Collapsed;
 			return (value == null) ? Visibility.Collapsed : Visibility.Visible;
 		}
-#if NETFX_CORE
+#if WINUI
         public object ConvertBack(object value, Type targetType, object parameter, string language)
 #else
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

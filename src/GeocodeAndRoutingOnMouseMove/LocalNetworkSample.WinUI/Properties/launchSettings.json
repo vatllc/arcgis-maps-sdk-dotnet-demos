@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LocalNetworkSample (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "LocalNetworkSample (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
