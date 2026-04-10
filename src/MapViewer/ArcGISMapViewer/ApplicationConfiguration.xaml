@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ArcGISRuntimeDesktop">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <x:String x:Key="PortalUrl">https://www.arcgis.com/sharing/rest</x:String>
     <x:String x:Key="OAuthClientID">zVQkIFGzM2o6mnQQ</x:String>
