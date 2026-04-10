@@ -13,14 +13,14 @@ internal class AppSettings : ModelBase
     
     public static Uri PortalUri { get; } = new Uri("https://www.arcgis.com/sharing/rest");
 
-    public static string OAuthClientId { get; } = "SET_CLIENT_ID";
+    public static string OAuthClientId { get; } = "4AXmWaDbz3gT6l76";
 
     // Also update 'mauisignin' scheme in 
     //   ./Platforms/iOS/Info.plist
     //   ./Platforms/Windows/Package.appxmanifest
     public const string OAuthRedirectScheme = "mauisignin";
 
-    public static Uri OAuthRedirectUri { get; } = new Uri(OAuthRedirectScheme + "://SET_REDIRECT_URL");
+    public static Uri OAuthRedirectUri { get; } = new Uri(OAuthRedirectScheme + "://loggedin");
 
     public ArcGISPortal? Portal => _PortalUser?.Portal;
     

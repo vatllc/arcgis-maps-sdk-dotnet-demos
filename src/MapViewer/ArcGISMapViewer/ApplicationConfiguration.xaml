@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ArcGISRuntimeDesktop">
 
-    <x:String x:Key="PortalUrl">https://www.arcgis.com/</x:String>
-    <x:String x:Key="OAuthClientID">SET_CLIENT_ID</x:String>
-    <x:String x:Key="OAuthRedirectUrl">SET_REDIRECT_URL</x:String> <!-- Must also match Protocol launch settings in Package.appxmanifest -->
+    <x:String x:Key="PortalUrl">https://www.arcgis.com/sharing/rest</x:String>
+    <x:String x:Key="OAuthClientID">zVQkIFGzM2o6mnQQ</x:String>
+    <x:String x:Key="OAuthRedirectUrl">agsmapviewerdemo://loggedin</x:String> <!-- Must also match Protocol launch settings in Package.appxmanifest -->
     
 </ResourceDictionary>
