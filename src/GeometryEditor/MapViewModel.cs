@@ -120,16 +120,4 @@ namespace EditorDemo
             }
         }
     }
-
-    public class MapViewController  : GeoViewController
-    {
-        public Task<bool> SetViewpointGeometryAsync(Geometry? boundingGeometry, double padding = 0d)
-        {
-            if(base.ConnectedView is MapView mapView && boundingGeometry is not null)
-            {
-                return mapView.SetViewpointGeometryAsync(boundingGeometry, padding);
-            }
-            return Task.FromResult(false);
-        }
-    }
 }

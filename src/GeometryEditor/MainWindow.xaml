@@ -18,7 +18,7 @@
         <esri:MapView Map="{Binding Map, Mode=OneWay}" x:Name="mapView"
                       esri:GeoViewController.GeoViewController="{Binding Controller, Source={StaticResource VM}}"
                       GraphicsOverlays="{Binding GraphicsOverlays, Mode=OneWay}" 
-                      GeometryEditor="{Binding GeometryEditor, ElementName=editor, Mode=OneWay}" >
+                      GeometryEditor="{Binding GeometryEditor, ElementName=editor, Mode=OneWay}" MouseRightButtonUp="MapView_MouseRightButtonUp">
             <Behaviors:Interaction.Triggers>
                 <Behaviors:EventTrigger EventName="GeoViewTapped" >
                     <Behaviors:InvokeCommandAction Command="{Binding GeoViewTappedCommand}" PassEventArgsToCommand="True" />
@@ -70,5 +70,30 @@
             </Grid>
         </Border>
 
+
+        <Border Background="{DynamicResource CalciteBackgroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                BorderThickness="1" BorderBrush="{DynamicResource CalciteText1Brush}" Margin="20" CornerRadius="2" DataContext="{Binding Path=DataContext, ElementName=editor}" 
+                Width="200" x:Name="EnterCoordinatesDialog" Visibility="Collapsed">
+            <Behaviors:Interaction.Behaviors>
+                <Behaviors:MouseDragElementBehavior ConstrainToParentBounds="True" />
+            </Behaviors:Interaction.Behaviors>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Background="{DynamicResource CalciteBrandBrush}" Padding="5,1,0,2">
+                    <TextBlock Text="Enter Coordinates" Foreground="{DynamicResource CalciteForegroundBrandContrastBrush}" FontWeight="SemiBold" />
+                </Border>
+                <StackPanel Grid.Row="1" Margin="4">
+                    <TextBlock Text="X:" />
+                    <TextBox x:Name="coordinateX" />
+                    <TextBlock Text="Y:" />
+                    <TextBox x:Name="coordinateY" />
+                    <Button Content="Accept" Margin="0,4" Style="{StaticResource CalcitePrimaryButtonStyle}"
+                            Click="AcceptCoordinates_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
