@@ -1,6 +1,6 @@
 Demo: Geometry Editor
 =======================
-Required version: ArcGIS Maps SDK for .NET 200.3.0
+Required version: ArcGIS Maps SDK for .NET 300.0.0
 
 Demonstrates using the [`GeometryEditor`](https://developers.arcgis.com/net/api-reference/api/netwin/Esri.ArcGISRuntime/Esri.ArcGISRuntime.UI.Editing.GeometryEditor.html) for more advanced editing capabilities, including switching out [tools](https://developers.arcgis.com/net/api-reference/api/netwin/Esri.ArcGISRuntime/Esri.ArcGISRuntime.UI.Editing.GeometryEditor.Tool.html#Esri_ArcGISRuntime_UI_Editing_GeometryEditor_Tool) for different editing configurations based on the active edit tool, and utilitizing multiple editors to provide input for GeometryEngine operations, like Cut and Reshape.
 

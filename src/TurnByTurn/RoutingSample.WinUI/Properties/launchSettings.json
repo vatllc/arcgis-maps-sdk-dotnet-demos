@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RoutingSample.WinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "RoutingSample.WinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

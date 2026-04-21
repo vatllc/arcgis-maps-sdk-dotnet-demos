@@ -73,8 +73,7 @@ namespace ArcGISMapViewer
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new Windows.StartupWindow();
-            m_window.Activated += StartupWindow_Activated;
+            var m_window = new Windows.StartupWindow();
             m_window.Activate();
             SimpleSplashScreen?.Hide(TimeSpan.FromSeconds(1));
             SimpleSplashScreen = null;

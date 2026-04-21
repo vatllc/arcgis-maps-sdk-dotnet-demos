@@ -19,7 +19,7 @@
 
         <esri:MapView x:Name="mapview" Grid.Column="1"
                       MouseMove="mapview_PointerMoved"
-                      Map="{Binding Map}" 
+                      Map="{Binding Map}" GeometryEditor="{Binding GeometryEditor}"
                       GraphicsOverlays="{Binding GraphicsOverlays}" />
 
         <TabControl SelectedIndex="{Binding CurrentTabItem, Mode=TwoWay}">
@@ -40,6 +40,7 @@
                     <Button Content="Add Point Barrier" Command="{Binding AddPointBarrierCommand}" />
                     <Button Content="Add Polyline Barrier" Command="{Binding AddPolylineBarrierCommand}" />
                     <Button Content="Add Polygon Barrier" Command="{Binding AddPolygonBarrierCommand}" />
+                    <Button Content="Accept Barrier" Command="{Binding CompleteBarrierCommand}" />
                     <Button Content="Clear Barriers" Command="{Binding ClearBarriersCommand}" />
                 </StackPanel>
             </TabItem>

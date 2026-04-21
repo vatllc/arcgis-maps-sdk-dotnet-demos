@@ -41,12 +41,12 @@ namespace BackgroundLocationTracking
 
             // Build and return the notification
             return new NotificationCompat.Builder(context, channelId)
-                .SetContentTitle("Location Tracking")
-                .SetContentText("Tracking your location")
-                .SetSmallIcon(Resource.Drawable.dotnet_bot)
-                .SetOngoing(true)
-                .SetContentIntent(pendingIntent)
-                .Build();
+                .SetContentTitle("Location Tracking")!
+                .SetContentText("Tracking your location")!
+                .SetSmallIcon(Resource.Drawable.dotnet_bot)!
+                .SetOngoing(true)!
+                .SetContentIntent(pendingIntent)!
+                .Build()!;
         }
     }
 

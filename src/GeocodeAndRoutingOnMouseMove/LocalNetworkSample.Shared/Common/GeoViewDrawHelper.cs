@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if NETFX_CORE
+#if WINUI
 using Windows.UI;
 #else
 using System.Windows.Media;
@@ -211,15 +211,15 @@ namespace LocalNetworkSample.Common
         /// <returns>An Action that cleans up all the event handlers.</returns>
         private static Action SetUpHandlers(GeoView view, Action<MapPoint> onMove, Action<MapPoint> onTapped, Action<MapPoint> onDoubleTapped)
         {
-#if NETFX_CORE
-            Windows.UI.Xaml.Input.PointerEventHandler movehandler = null;
+#if WINUI
+           Microsoft.UI.Xaml.Input.PointerEventHandler movehandler = null;
 #else
             System.Windows.Input.MouseEventHandler movehandler = null;
 #endif
 
             if (onMove != null)
             {
-#if NETFX_CORE
+#if WINUI
                 movehandler = (s, e) => onMove(((MapView)view).ScreenToLocation(e.GetCurrentPoint(view).Position));
                 view.PointerMoved += movehandler;
 #else
@@ -242,7 +242,7 @@ namespace LocalNetworkSample.Common
             Action cleanup = () =>
             {
                 if (movehandler != null)
-#if NETFX_CORE
+#if WINUI
                     view.PointerMoved -= movehandler;
 #else
                     view.MouseMove -= movehandler;

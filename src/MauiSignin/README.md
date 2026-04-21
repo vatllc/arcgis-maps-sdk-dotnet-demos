@@ -1,6 +1,6 @@
 Demo: .NET MAUI Sign In Sample
 =======================
-Required version: ArcGIS Maps SDK for .NET 200.0.0
+Required version: ArcGIS Maps SDK for .NET 300.0.0
 
 Demonstrates using OAuth to sign into an ArcGIS Portal, retrieve and save an ArcGIS Maps SDK license, and store credentials persisting across application sessions.
 

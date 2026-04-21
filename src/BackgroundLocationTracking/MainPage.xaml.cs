@@ -75,7 +75,7 @@ namespace BackgroundLocationTracking
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"An error occurred while starting tracking: {ex.Message}.\n Please try again.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"An error occurred while starting tracking: {ex.Message}.\n Please try again.", "OK");
                 _isTracking = false;
             }
             UpdateButtonStates();
@@ -100,7 +100,7 @@ namespace BackgroundLocationTracking
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"An error occurred while stopping tracking: {ex.Message}.\n Please try again.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"An error occurred while stopping tracking: {ex.Message}.\n Please try again.", "OK");
                 _isTracking = true;
             }
             UpdateButtonStates();
@@ -130,7 +130,7 @@ namespace BackgroundLocationTracking
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"An error occurred while starting the location data source: {ex.Message}.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"An error occurred while starting the location data source: {ex.Message}.", "OK");
             }
         }
 
@@ -164,7 +164,7 @@ namespace BackgroundLocationTracking
             var status = await Permissions.CheckStatusAsync<Permissions.LocationAlways>();
             if (status == PermissionStatus.Denied || status == PermissionStatus.Unknown)
             {
-                await Shell.Current.DisplayAlert("Access Requested", "Please allow precise location all the time to track while phone is locked or viewing other applications.", "OK");
+                await Shell.Current.DisplayAlertAsync("Access Requested", "Please allow precise location all the time to track while phone is locked or viewing other applications.", "OK");
                 status = await Permissions.RequestAsync<Permissions.LocationAlways>();
             }
 

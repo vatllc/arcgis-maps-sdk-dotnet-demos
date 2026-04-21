@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Esri.ArcGISRuntime;
+using Esri.ArcGISRuntime.Http;
 using Esri.ArcGISRuntime.Location;
 using Esri.ArcGISRuntime.Portal;
 using Microsoft.UI.Xaml.Media;
@@ -69,49 +71,87 @@ public partial class ApplicationViewModel : ObservableObject
     [ObservableProperty]
     public partial PortalItem? PortalItem { get; set; }
 
-    partial void OnPortalItemChanged(PortalItem? value)
+    async partial void OnPortalItemChanged(PortalItem? oldValue, PortalItem? newValue)
     {
-        if (value is not null)
+        if (newValue is not null)
         {
             Scene? scene = null;
             var map = new Map(BasemapStyle.ArcGISStreets);
-            if(value.Type == PortalItemType.WebScene)
-                scene = new Scene(value);
-            else if (value.Type == PortalItemType.WebMap)
-                map = new Map(value);
-            else if(value.Type == PortalItemType.FeatureService || value.Type == PortalItemType.WFS)
-                map.OperationalLayers.Add(new FeatureLayer(value));
-            else if (value.Type == PortalItemType.WMS)
-                map.OperationalLayers.Add(new WmsLayer(value));
-            else if (value.Type == PortalItemType.KML)
-                map.OperationalLayers.Add(new KmlLayer(value));
-            else if (value.Type == PortalItemType.VectorTileService)
-                map.OperationalLayers.Add(new ArcGISVectorTiledLayer(value));
-            else if (value.Type == PortalItemType.MapService)
-                map.OperationalLayers.Add(new ArcGISMapImageLayer(value));
-            else if (value.Type == PortalItemType.FeatureCollection)
-                map.OperationalLayers.Add(new FeatureCollectionLayer(new Esri.ArcGISRuntime.Data.FeatureCollection(value)));
-            else if(value.Type == PortalItemType.SceneService)
+            if(newValue.Type == PortalItemType.WebScene)
+                scene = new Scene(newValue);
+            else if (newValue.Type == PortalItemType.WebMap)
+                map = new Map(newValue);
+            else if(newValue.Type == PortalItemType.FeatureService || newValue.Type == PortalItemType.WFS)
+                map.OperationalLayers.Add(new FeatureLayer(newValue));
+            else if (newValue.Type == PortalItemType.WMS)
+                map.OperationalLayers.Add(new WmsLayer(newValue));
+            else if (newValue.Type == PortalItemType.KML)
+                map.OperationalLayers.Add(new KmlLayer(newValue));
+            else if (newValue.Type == PortalItemType.VectorTileService)
+                map.OperationalLayers.Add(new ArcGISVectorTiledLayer(newValue));
+            else if (newValue.Type == PortalItemType.MapService)
+                map.OperationalLayers.Add(new ArcGISMapImageLayer(newValue));
+            else if (newValue.Type == PortalItemType.FeatureCollection)
+                map.OperationalLayers.Add(new FeatureCollectionLayer(new Esri.ArcGISRuntime.Data.FeatureCollection(newValue)));
+            else if(newValue.Type == PortalItemType.SceneService)
             {
-                scene = new Scene();
-                scene.OperationalLayers.Add(new ArcGISSceneLayer(value));
+                // Check URL metadata to determine which kind of scene layer
+                var url = newValue.ServiceUrl;
+                using var client = new System.Net.Http.HttpClient(new ArcGISHttpMessageHandler());
+                var json = await client.GetFromJsonAsync<ServiceMetadata>(url);
+                var type = json?.Layers.FirstOrDefault()?.LayerType;
+
+                if (type == "Building")
+                {
+                    scene = new Scene(viewingMode: SceneViewingMode.Local);
+                    scene.OperationalLayers.Add(new BuildingSceneLayer(newValue));
+                }
+                else if(type == "IntegratedMesh")
+                {
+                    scene = new Scene();
+                    scene.OperationalLayers.Add(new IntegratedMeshLayer(newValue));
+                }
+                else
+                {
+                    scene = new Scene();
+                    scene.OperationalLayers.Add(new ArcGISSceneLayer(newValue));
+                }
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"{value.Type} not implemented");
+                System.Diagnostics.Debug.WriteLine($"{newValue.Type} not implemented");
             }
-            if (value.Extent != null)
+            if (newValue.Extent != null && newValue.Type != PortalItemType.WebScene && newValue.Type != PortalItemType.WebMap) // WebMap and WebScenes already have initial viewpoints
             {
                 if(scene != null)
-                    scene.InitialViewpoint = new Viewpoint(value.Extent);
+                    scene.InitialViewpoint = new Viewpoint(newValue.Extent);
                 else
-                    map.InitialViewpoint = new Viewpoint(value.Extent);
+                    map.InitialViewpoint = new Viewpoint(newValue.Extent);
             }
-            GeoModel = scene is null ? map : scene;
+            GeoModel model = scene is null ? map : scene;
+            try
+            {
+                await model.LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading portal item: {ex.Message}");
+                // TODO: Raise load alert
+                PortalItem = oldValue;
+                return;
+            }
+            GeoModel = model;
         }
-        AppSettings.SetLastPortalItem(value);
+        AppSettings.SetLastPortalItem((PortalItem?)newValue);
     }
-
+    private partial class ServiceMetadata
+    {
+        public ServiceMetadataLayer[] Layers { get; set; }
+    }
+    private partial class ServiceMetadataLayer
+    {
+        public string LayerType { get; set; }
+    }
     [ObservableProperty]
     public partial string WindowSubTitle { get; set; } = string.Empty;
 

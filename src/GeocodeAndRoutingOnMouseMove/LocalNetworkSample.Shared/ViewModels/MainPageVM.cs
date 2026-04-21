@@ -6,6 +6,7 @@ using Esri.ArcGISRuntime.Tasks.Geocoding;
 using Esri.ArcGISRuntime.Tasks.NetworkAnalysis;
 using Esri.ArcGISRuntime.UI;
 using Esri.ArcGISRuntime.UI.Controls;
+using Esri.ArcGISRuntime.UI.Editing;
 using LocalNetworkSample.Common;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-#if NETFX_CORE
+#if WINUI
 using Windows.Storage;
 #endif
 
@@ -26,6 +27,11 @@ namespace LocalNetworkSample
             AddPointBarrierCommand = new DelegateCommand(() => DrawBarrier<MapPoint>());
             AddPolylineBarrierCommand = new DelegateCommand(() => DrawBarrier<Polyline>());
             AddPolygonBarrierCommand = new DelegateCommand(() => DrawBarrier<Polygon>());
+            CompleteBarrierCommand = new DelegateCommand((o) =>
+            {
+                var geom = GeometryEditor.Stop();
+                AddBarrier(geom);
+            }, (o) => GeometryEditor.IsStarted && GeometryEditor.Geometry?.IsEmpty == false);
             ClearBarriersCommand = new DelegateCommand(() => ClearBarriers());
             GraphicsOverlays = new GraphicsOverlayCollection();
             GraphicsOverlays.Add(new GraphicsOverlay() { Id = "PolygonBarriers", Renderer = new SimpleRenderer(new SimpleFillSymbol() { Color = System.Drawing.Color.FromArgb(120, 255, 0, 0) }) });
@@ -33,7 +39,19 @@ namespace LocalNetworkSample
             GraphicsOverlays.Add(new GraphicsOverlay() { Id = "PointBarriers", Renderer = new SimpleRenderer(new SimpleMarkerSymbol() { Color = System.Drawing.Color.Red, Size = 12 }) });
             GraphicsOverlays.Add(new GraphicsOverlay() { Id = "Route", Renderer = new SimpleRenderer(new SimpleLineSymbol() { Color = System.Drawing.Color.CornflowerBlue, Width = 5 }) });
             GraphicsOverlays.Add(new GraphicsOverlay() { Id = "Geocode", Renderer = new SimpleRenderer(new SimpleMarkerSymbol() { Size = 10, Outline = new SimpleLineSymbol() { Color = System.Drawing.Color.White, Width = 2 } }) });
+
+            GeometryEditor.PropertyChanged += (s, e) =>
+             {
+                 ((DelegateCommand)CompleteBarrierCommand).OnCanExecuteChanged();
+                 if(GeometryEditor.Geometry is MapPoint p && !p.IsEmpty)
+                 {
+                     // if the geometry is a point and is not empty, add it immediately as a barrier and reset the editor so the user doesn't have to click "Complete Barrier"
+                     AddBarrier(GeometryEditor.Stop());
+                 }
+             };
         }
+
+        public GeometryEditor GeometryEditor { get; } = new GeometryEditor();
 
         private bool m_UseOnlineService;
         public bool UseOnlineService
@@ -53,7 +71,7 @@ namespace LocalNetworkSample
 
         public void UpdateMouseLocation(MapPoint location)
         {
-#if NETFX_CORE
+#if WINUI
             if(!IsSidePanelOpen || location == null)
                 return;
 #endif
@@ -248,7 +266,7 @@ namespace LocalNetworkSample
             {
                 BusyMessage = "Loading network...";
                 string path = "Data\\Networks";
-#if NETFX_CORE
+#if WINUI
                 var foldername = Windows.ApplicationModel.Package.Current.InstalledLocation.Path + "\\" + path;
                 var datafolder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(foldername);
                 var folders = await datafolder.GetFoldersAsync();
@@ -294,7 +312,7 @@ namespace LocalNetworkSample
             {
                 BusyMessage = "Loading geocoder...";
                 string path = "Data\\Locators";
-#if NETFX_CORE
+#if WINUI
                 var foldername = Windows.ApplicationModel.Package.Current.InstalledLocation.Path + "\\" + path;
                 var datafolder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(foldername);
                 var folders = await datafolder.GetFoldersAsync();
@@ -384,37 +402,45 @@ namespace LocalNetworkSample
         public ICommand AddPolylineBarrierCommand { get; private set; }
         public ICommand AddPolygonBarrierCommand { get; private set; }
         public ICommand ClearBarriersCommand { get; private set; }
+        public ICommand CompleteBarrierCommand { get; private set; }
 
-        private async void DrawBarrier<T>()
+        private void DrawBarrier<T>()
         {
-            try
+            if (typeof(T) == typeof(MapPoint))
             {
-                GraphicsOverlay barriers = null;
-                Geometry geometry = null;
-
-                if (typeof(T) == typeof(MapPoint))
-                {
-                    barriers = FindGraphicsOverlay("PointBarriers");
-                    geometry = await ((MapView)GeoView).SketchEditor.StartAsync(SketchCreationMode.Point, false);
-                }
-                else if (typeof(T) == typeof(Polyline))
-                {
-                    barriers = FindGraphicsOverlay("PolylineBarriers");
-                    geometry = await ((MapView)GeoView).SketchEditor.StartAsync(SketchCreationMode.Polyline, false);
-                }
-                else if (typeof(T) == typeof(Polygon))
-                {
-                    barriers = FindGraphicsOverlay("PolygonBarriers");
-                    geometry = await ((MapView)GeoView).SketchEditor.StartAsync(SketchCreationMode.Polygon, false);
-                }
-
-                if (geometry != null)
-                    barriers.Graphics.Add(new Graphic(geometry));
-
-                if (m_lastRouteLocation != null)
-                    UpdateRoute(m_lastRouteLocation);
+                GeometryEditor.Start(GeometryType.Point);
             }
-            catch (OperationCanceledException) { } //ignore
+            else if (typeof(T) == typeof(Polyline))
+            {
+                GeometryEditor.Start(GeometryType.Polyline);
+            }
+            else if (typeof(T) == typeof(Polygon))
+            {
+                GeometryEditor.Start(GeometryType.Polygon);
+            }
+        }
+        private void AddBarrier(Geometry? geometry)
+        {
+            if (geometry is null || geometry.IsEmpty)
+                return;
+            GraphicsOverlay? barriers = null;
+            if (geometry is MapPoint)
+            {
+                barriers = FindGraphicsOverlay("PointBarriers");
+            }
+            else if (geometry is Polyline)
+            {
+                barriers = FindGraphicsOverlay("PolylineBarriers");
+            }
+            else if (geometry is Polygon)
+            {
+                barriers = FindGraphicsOverlay("PolygonBarriers");
+            }
+            if (barriers != null)
+                barriers.Graphics.Add(new Graphic(geometry));
+
+            if (m_lastRouteLocation != null)
+                UpdateRoute(m_lastRouteLocation);
         }
 
         private void ClearBarriers()

@@ -11,7 +11,7 @@
             {
 #if MAUI
                 return false;
-#elif NETFX_CORE
+#elif WINUI
                 return Windows.ApplicationModel.DesignMode.DesignModeEnabled;
 #else
                 return System.ComponentModel.DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject());

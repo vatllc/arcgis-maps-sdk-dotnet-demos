@@ -1,5 +1,6 @@
 ﻿using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
+using Esri.ArcGISRuntime.UI.Editing;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,33 @@ namespace SymbolEditorApp.Controls
             mapView.InteractionOptions = new Esri.ArcGISRuntime.UI.MapViewInteractionOptions() { IsZoomEnabled = false, IsPanEnabled = false };
             mapView.GraphicsOverlays.Add(new Esri.ArcGISRuntime.UI.GraphicsOverlay() { Renderer = new SimpleRenderer(new SimpleFillSymbol() { Color = System.Drawing.Color.Red }) });
             this.Loaded += GeometryEditor_Loaded;
+            this.Unloaded += GeometryEditor_Unloaded;
+        }
+
+        private void GeometryEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            mapView.GeometryEditor.PropertyChanged -= GeometryEditor_PropertyChanged;
         }
 
         private async void GeometryEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            try
+            mapView.GeometryEditor.PropertyChanged += GeometryEditor_PropertyChanged;
+            StartEditor();
+        }
+        private void StartEditor()
+        {
+            mapView.GeometryEditor.Tool = new FreehandTool();
+            mapView.GeometryEditor.Start(GeometryType.Polygon);
+        }
+
+        private void GeometryEditor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(Esri.ArcGISRuntime.UI.Editing.GeometryEditor.Geometry)
+                && mapView.GeometryEditor.Geometry?.IsEmpty == false)
             {
-                var geometry = await mapView.SketchEditor.StartAsync(Esri.ArcGISRuntime.UI.SketchCreationMode.FreehandPolygon, false);
                 mapView.GraphicsOverlays[0].Graphics.Clear();
-                mapView.GraphicsOverlays[0].Graphics.Add(new Esri.ArcGISRuntime.UI.Graphic(geometry));
-                GeometryEditor_Loaded(sender, e);
-            }
-            catch(System.Threading.Tasks.TaskCanceledException)
-            {
+                mapView.GraphicsOverlays[0].Graphics.Add(new Esri.ArcGISRuntime.UI.Graphic(mapView.GeometryEditor.Stop()));
+                StartEditor();
             }
         }
 

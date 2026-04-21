@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>LocalNetworkSample</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <WinUISDKReferences>false</WinUISDKReferences>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);WINUI</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+
+      <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+      <Content Include="..\data\networks\sandiego\san-diego-network.db">
+          <Link>Data\Networks\SanDiego\san-diego-network.db</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_adjacencies">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_adjacencies</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_edge_chains">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_edge_chains</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_historical_traffic">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_historical_traffic</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_schema">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_schema</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_source_data">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_source_data</Link>
+      </Content>
+      <Content Include="..\data\networks\sandiego\san-diego-network.tn\Streets_ND_weight_values">
+          <Link>Data\Networks\SanDiego\san-diego-network.tn\Streets_ND_weight_values</Link>
+      </Content>
+      <Content Include="..\Data\Locators\san-diego\SanDiego_StreetAddress.loc">
+          <Link>Data\Locators\san-diego\SanDiego_StreetAddress.loc</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\Data\Locators\san-diego\SanDiego_StreetAddress.loz">
+          <Link>Data\Locators\san-diego\SanDiego_StreetAddress.loz</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+  </ItemGroup>
+
+  <!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Esri.ArcGISRuntime.WinUI" Version="300.0.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+  </ItemGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+
+  <!-- Publish Properties -->
+  <PropertyGroup>
+    <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
+    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
+    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+  </PropertyGroup>
+  <Import Project="..\LocalNetworkSample.Shared\LocalNetworkSample.Shared.projitems" Label="Shared" />
+</Project>
